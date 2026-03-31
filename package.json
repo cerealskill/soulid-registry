@@ -1,0 +1,13 @@
+{
+  "name": "soulid-registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "hono": "^4.7.5"
+  }
+}
