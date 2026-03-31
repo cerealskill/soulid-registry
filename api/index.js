@@ -44,6 +44,17 @@ app.get('/health', (c) => {
   })
 })
 
+// ── GET /ping-db ── (debug)
+app.get('/ping-db', async (c) => {
+  try {
+    const db = getDB()
+    await db.execute('SELECT 1')
+    return c.json({ ok: true })
+  } catch (e) {
+    return c.json({ ok: false, error: e.message, stack: e.stack?.slice(0, 300) }, 500)
+  }
+})
+
 // ── GET /resolve/:soul_id ──
 app.get('/resolve/:soul_id', async (c) => {
   const soulId = c.req.param('soul_id')
