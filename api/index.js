@@ -7,10 +7,12 @@ export const config = { runtime: 'edge' }
 const app = new Hono()
 
 function getDB() {
-  return createClient({
-    url: process.env.TURSO_URL,
-    authToken: process.env.TURSO_TOKEN,
-  })
+  const url = process.env.TURSO_URL
+  const authToken = process.env.TURSO_TOKEN
+  if (!url || !authToken) {
+    throw new Error(`Missing env vars: TURSO_URL=${!!url} TURSO_TOKEN=${!!authToken}`)
+  }
+  return createClient({ url, authToken })
 }
 
 async function ensureTable(db) {
@@ -28,7 +30,16 @@ async function ensureTable(db) {
 
 // ── GET /health ──
 app.get('/health', (c) => {
-  return c.json({ status: 'ok', service: 'soulid-registry', version: '0.1.0' })
+  return c.json({
+    status: 'ok',
+    service: 'soulid-registry',
+    version: '0.1.0',
+    env: {
+      turso_url: !!process.env.TURSO_URL,
+      turso_token: !!process.env.TURSO_TOKEN,
+      api_key: !!process.env.REGISTRY_API_KEY,
+    }
+  })
 })
 
 // ── GET /resolve/:soul_id ──
