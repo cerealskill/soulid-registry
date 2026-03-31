@@ -7,11 +7,13 @@ export const config = { runtime: 'edge' }
 const app = new Hono()
 
 function getDB() {
-  const url = process.env.TURSO_URL
+  let url = process.env.TURSO_URL
   const authToken = process.env.TURSO_TOKEN
   if (!url || !authToken) {
     throw new Error(`Missing env vars: TURSO_URL=${!!url} TURSO_TOKEN=${!!authToken}`)
   }
+  // Edge runtime requires https:// not libsql://
+  url = url.replace(/^libsql:\/\//, 'https://')
   return createClient({ url, authToken })
 }
 
