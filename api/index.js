@@ -28,6 +28,10 @@ async function ensureTable(db) {
       updated_at INTEGER NOT NULL
     )
   `)
+  // migrate: add archetype column if missing (idempotent)
+  try {
+    await db.execute('ALTER TABLE souls ADD COLUMN archetype TEXT')
+  } catch (_) { /* already exists */ }
 }
 
 function authCheck(c) {
