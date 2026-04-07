@@ -1,10 +1,17 @@
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { createClient } from '@libsql/client/web'
 import { handle } from 'hono/vercel'
 
 export const config = { runtime: 'edge' }
 
 const app = new Hono()
+
+app.use('*', cors({
+  origin: '*',
+  allowMethods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+}))
 
 function getDB() {
   let url = process.env.TURSO_URL
